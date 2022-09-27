@@ -1,9 +1,14 @@
 import os
 import torch
-import Training
-import Testing
-from Evaluation import main
+from .Training import train_net
+from .Testing import test_net
+from .Evaluation import main
 import argparse
+
+
+def entry_point():
+    pass
+
 
 if __name__ == "__main__":
 
@@ -40,8 +45,8 @@ if __name__ == "__main__":
 
     num_gpus = torch.cuda.device_count()
     if args.Training:
-        Training.train_net(num_gpus=num_gpus, args=args)
+        train_net(num_gpus=num_gpus, args=args)
     if args.Testing:
-        Testing.test_net(args)
+        test_net(args)
     if args.Evaluation:
         main.evaluate(args)

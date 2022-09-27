@@ -1,6 +1,6 @@
 from PIL import Image
 from torch.utils import data
-import transforms as trans
+from .transforms import *
 from torchvision import transforms
 import random
 import os
@@ -76,9 +76,9 @@ class ImageData(data.Dataset):
             contour = Image.open(self.contour_path[item]).convert('L')
             random_size = self.scale_size
 
-            new_img = trans.Scale((random_size, random_size))(image)
-            new_label = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(label)
-            new_contour = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(contour)
+            new_img = Scale((random_size, random_size))(image)
+            new_label = Scale((random_size, random_size), interpolation=Image.NEAREST)(label)
+            new_contour = Scale((random_size, random_size), interpolation=Image.NEAREST)(contour)
 
             # random crop
             w, h = new_img.size
@@ -125,34 +125,34 @@ def get_loader(dataset_list, data_root, img_size, mode='train'):
 
     if mode == 'train':
 
-        transform = trans.Compose([
+        transform = Compose([
                 transforms.ToTensor(),
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
 
-        t_transform = trans.Compose([
+        t_transform = Compose([
             transforms.ToTensor(),
         ])
-        label_14_transform = trans.Compose([
-            trans.Scale((img_size // 16, img_size // 16), interpolation=Image.NEAREST),
+        label_14_transform = Compose([
+            Scale((img_size // 16, img_size // 16), interpolation=Image.NEAREST),
             transforms.ToTensor(),
         ])
-        label_28_transform = trans.Compose([
-            trans.Scale((img_size//8, img_size//8), interpolation=Image.NEAREST),
+        label_28_transform = Compose([
+            Scale((img_size//8, img_size//8), interpolation=Image.NEAREST),
             transforms.ToTensor(),
         ])
-        label_56_transform = trans.Compose([
-            trans.Scale((img_size//4, img_size//4), interpolation=Image.NEAREST),
+        label_56_transform = Compose([
+            Scale((img_size//4, img_size//4), interpolation=Image.NEAREST),
             transforms.ToTensor(),
         ])
-        label_112_transform = trans.Compose([
-            trans.Scale((img_size//2, img_size//2), interpolation=Image.NEAREST),
+        label_112_transform = Compose([
+            Scale((img_size//2, img_size//2), interpolation=Image.NEAREST),
             transforms.ToTensor(),
         ])
         scale_size = 256
     else:
-        transform = trans.Compose([
-            trans.Scale((img_size, img_size)),
+        transform = Compose([
+            Scale((img_size, img_size)),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),  # 处理的是Tensor
         ])

@@ -6,9 +6,9 @@ from torch.autograd import Variable
 import torch.multiprocessing as mp
 import torch.distributed as dist
 
-from dataset import get_loader
+from .dataset import get_loader
 import math
-from Models.ImageDepthNet import ImageDepthNet
+from .Models.ImageDepthNet import ImageDepthNet
 import os
 
 

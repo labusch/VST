@@ -2,11 +2,11 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from dataset import get_loader
-import transforms as trans
+from .dataset import get_loader
+from .transforms import *
 from torchvision import transforms
 import time
-from Models.ImageDepthNet import ImageDepthNet
+from .Models.ImageDepthNet import ImageDepthNet
 from torch.utils import data
 import numpy as np
 import os
@@ -69,9 +69,9 @@ def test_net(args):
 
             output_s = output_s.data.cpu().squeeze(0)
 
-            transform = trans.Compose([
+            transform = Compose([
                 transforms.ToPILImage(),
-                trans.Scale((image_w, image_h))
+                Scale((image_w, image_h))
             ])
             output_s = transform(output_s)
 

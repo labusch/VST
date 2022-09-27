@@ -18,7 +18,7 @@ setup(
     install_requires=install_requires,
     entry_points={
       'console_scripts': [
-        "train_test_eval_rgb=RGB_VST.train_test_eval.entrypoint",
+        "train_test_eval_rgb=RGB_VST.train_test_eval:entry_point",
         ]
     },
     python_requires='>=3.6.0',

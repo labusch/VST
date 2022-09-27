@@ -7,11 +7,6 @@ import argparse
 
 
 def entry_point():
-    pass
-
-
-if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
     # train
     parser.add_argument('--Training', default=False, type=bool, help='Training or not')
@@ -19,7 +14,8 @@ if __name__ == "__main__":
     parser.add_argument('--data_root', default='./Data/', type=str, help='data path')
     parser.add_argument('--train_steps', default=60000, type=int, help='total training steps')
     parser.add_argument('--img_size', default=224, type=int, help='network input size')
-    parser.add_argument('--pretrained_model', default='./pretrained_model/80.7_T2T_ViT_t_14.pth.tar', type=str, help='load Pretrained model')
+    parser.add_argument('--pretrained_model', default='./pretrained_model/80.7_T2T_ViT_t_14.pth.tar', type=str,
+                        help='load Pretrained model')
     parser.add_argument('--lr_decay_gamma', default=0.1, type=int, help='learning rate decay')
     parser.add_argument('--lr', default=1e-4, type=int, help='learning rate')
     parser.add_argument('--epochs', default=200, type=int, help='epochs')
@@ -50,3 +46,8 @@ if __name__ == "__main__":
         test_net(args)
     if args.Evaluation:
         main.evaluate(args)
+
+
+if __name__ == "__main__":
+
+    entry_point()

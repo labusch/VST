@@ -4,6 +4,8 @@ from .transforms import *
 from torchvision import transforms
 import random
 import os
+from fnmatch import fnmatch
+from tqdm import tqdm
 
 
 def load_list(dataset_name, data_root):
@@ -24,22 +26,49 @@ def load_list(dataset_name, data_root):
     return images, labels, contours
 
 
-def load_test_list(test_path, data_root):
+def load_test_list(test_path, pattern=None, follow_symlinks=False):
+
+    if pattern is None:
+        pattern = ["*.jpg", "*.png"]
 
     images = []
 
-    if 'DUTS' in test_path:
-        img_root = data_root + test_path + '/DUTS-TE-Image/'
-    else:
-        img_root = data_root + test_path + '/images/'
+    # if 'DUTS' in test_path:
+    #     img_root = data_root + test_path + '/DUTS-TE-Image/'
+    # else:
+    #     img_root = data_root + test_path + '/images/'
+    #
+    # img_files = os.listdir(img_root)
+    # if '/HKU-IS/' in img_root:
+    #     ext = '.png'
+    # else:
+    #     ext = '.jpg'
+    # for img in img_files:
+    #     images.append(img_root + img[:-4] + ext)
 
-    img_files = os.listdir(img_root)
-    if '/HKU-IS/' in img_root:
-        ext = '.png'
-    else:
-        ext = '.jpg'
-    for img in img_files:
-        images.append(img_root + img[:-4] + ext)
+    def file_it(to_scan):
+
+        for f in os.scandir(to_scan):
+
+            try:
+                if f.is_dir(follow_symlinks=follow_symlinks):
+                    for g in file_it(f):
+                        yield g
+                else:
+                    for pat in pattern:
+                        if fnmatch(f.path, pat):
+                            yield f.path
+                            continue
+            except NotADirectoryError:
+                continue
+
+    _file_it = tqdm(file_it(test_path))
+
+    print("Scanning for {} files ...".format(pattern))
+    images = []
+    for p in _file_it:
+        images.append(p)
+        _file_it.set_description("Scanning for {} files ... [{}]".format(pattern, len(images)))
 
     return images
 
@@ -50,7 +79,7 @@ class ImageData(data.Dataset):
         if mode == 'train':
             self.image_path, self.label_path, self.contour_path = load_list(dataset_list, data_root)
         else:
-            self.image_path = load_test_list(dataset_list, data_root)
+            self.image_path = load_test_list(dataset_list)
 
         self.transform = transform
         self.t_transform = t_transform
